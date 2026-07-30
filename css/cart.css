@@ -1,0 +1,17 @@
+/* Add-to-Cart Page Specific Styles */
+.cart-item-row {
+  transition: background-color 0.2s ease;
+}
+
+.cart-item-row:hover {
+  background-color: rgba(248, 250, 252, 0.8);
+}
+
+.qty-btn {
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.qty-btn:active {
+  transform: scale(0.92);
+}

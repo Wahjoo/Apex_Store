@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>APEX | Visually Appealing E-Commerce Landing Page</title>
+  <meta name="description" content="Discover premium products at unbeatable prices on APEX Store." />
+  
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/landing.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+        
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div class="w-11 h-11 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-200 group-hover:scale-105 transition">
+            A
+          </div>
+          <div class="flex flex-col">
+            <span class="font-extrabold text-xl tracking-tight text-slate-900 leading-none group-hover:text-indigo-600 transition">APEX</span>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-600">STORE</span>
+          </div>
+        </a>
+
+        <!-- Search Bar -->
+        <div id="search-container" class="relative flex-1 max-w-md hidden md:block">
+          <div class="relative">
+            <input type="text" id="header-search-input" placeholder="Search products, brands, categories..." class="w-full bg-slate-100/90 border border-slate-200 rounded-2xl py-2.5 pl-11 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" />
+            <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <div id="search-results-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 hidden"></div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="text-sm font-bold text-indigo-600">Home</a>
+          <a href="shop.html" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">Shop</a>
+          <a href="about.html" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">About</a>
+          <a href="contact.html" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition">Contact</a>
+        </nav>
+
+        <!-- Cart Icon & Mobile Hamburger -->
+        <div class="flex items-center gap-4">
+          <a href="cart.html" class="relative p-3 rounded-2xl bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <span class="cart-count-badge absolute -top-1.5 -right-1.5 bg-indigo-600 text-white text-xs font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-md hidden">0</span>
+          </a>
+
+          <button id="mobile-menu-btn" class="lg:hidden p-3 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-slate-200 px-4 pt-4 pb-6 space-y-3">
+      <a href="index.html" class="block px-3 py-2 rounded-xl text-base font-bold text-indigo-600 bg-indigo-50">Home</a>
+      <a href="shop.html" class="block px-3 py-2 rounded-xl text-base font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Shop</a>
+      <a href="about.html" class="block px-3 py-2 rounded-xl text-base font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">About</a>
+      <a href="contact.html" class="block px-3 py-2 rounded-xl text-base font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Contact</a>
+    </div>
+  </header>
+
+  <!-- MAIN LANDING CONTENT -->
+  <main class="flex-grow space-y-16 pb-20">
+    
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden bg-slate-900 text-white rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 shadow-2xl">
+      <div class="absolute inset-0 opacity-40 bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-3xl"></div>
+      
+      <div class="relative max-w-7xl mx-auto px-6 py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 text-center lg:text-left">
+          <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-indigo-300 text-xs font-bold uppercase tracking-widest">
+            ✨ Discover Next-Gen Shopping
+          </span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            Elevate Your <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">Everyday Lifestyle</span>
+          </h1>
+          <p class="text-slate-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+            Explore thousands of curated top-tier products across electronics, fashion, furniture, and luxury accessories with lightning-fast shipping.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <a href="shop.html" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0 text-center">
+              Explore Collection
+            </a>
+            <a href="about.html" class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl backdrop-blur-md border border-white/20 transition text-center">
+              Our Story
+            </a>
+          </div>
+        </div>
+        <div class="relative flex justify-center">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80" alt="Hero Banner" class="rounded-3xl shadow-2xl object-cover h-[380px] lg:h-[450px] w-full max-w-md border-4 border-white/10" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Filter Pills Bar -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-xs font-extrabold uppercase tracking-widest text-indigo-600 mb-4">Browse Categories</h2>
+      <div id="category-pills-container" class="flex flex-wrap justify-center gap-3">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Featured Categories Grid -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Featured Categories</h2>
+          <p class="text-slate-500 text-sm">Handpicked top departments for quick discovery</p>
+        </div>
+        <a href="shop.html" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+          View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+      </div>
+      <div id="landing-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Featured Products Grid -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Trending Products</h2>
+          <p class="text-slate-500 text-sm">Most popular items updated live from API</p>
+        </div>
+        <a href="shop.html" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+          Shop Catalog <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+      </div>
+      <div id="featured-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Value Proposition Banner -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-3xl p-8 lg:p-12 text-white grid grid-cols-1 md:grid-cols-3 gap-8 text-center shadow-xl">
+        <div class="space-y-2">
+          <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto text-indigo-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          </div>
+          <h3 class="font-bold text-lg">Free Express Delivery</h3>
+          <p class="text-xs text-slate-300">On all orders over $50 with real-time tracking</p>
+        </div>
+        <div class="space-y-2">
+          <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto text-indigo-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <h3 class="font-bold text-lg">Buyer Protection</h3>
+          <p class="text-xs text-slate-300">Full 30-day money back refund assurance</p>
+        </div>
+        <div class="space-y-2">
+          <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto text-indigo-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          </div>
+          <h3 class="font-bold text-lg">24/7 Priority Support</h3>
+          <p class="text-xs text-slate-300">Dedicated help desk ready for any inquiry</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-lg">A</div>
+          <span class="font-extrabold text-xl text-white tracking-tight">APEX STORE</span>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">Your premier online destination for fashion, electronics, and home decor.</p>
+      </div>
+
+      <div class="space-y-3">
+        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Navigation</h4>
+        <ul class="space-y-2 text-xs">
+          <li><a href="index.html" class="hover:text-indigo-400 transition">Home Landing</a></li>
+          <li><a href="shop.html" class="hover:text-indigo-400 transition">Shop All Products</a></li>
+          <li><a href="about.html" class="hover:text-indigo-400 transition">About Us</a></li>
+          <li><a href="contact.html" class="hover:text-indigo-400 transition">Contact & Help</a></li>
+        </ul>
+      </div>
+
+      <div class="space-y-3">
+        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Connect</h4>
+        <div class="flex gap-3 text-slate-400">
+          <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition">X</a>
+          <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition">Fb</a>
+          <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-indigo-600 hover:text-white rounded-xl flex items-center justify-center transition">Ig</a>
+        </div>
+        <p class="text-xs text-slate-400 pt-2">Email: support@apexstore.com</p>
+      </div>
+
+      <div class="space-y-3">
+        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Newsletter</h4>
+        <p class="text-xs text-slate-400">Subscribe for discounts & new drops.</p>
+        <form onsubmit="event.preventDefault(); showToast('Subscribed to newsletter!'); this.reset();" class="flex gap-2">
+          <input type="email" required placeholder="Enter email..." class="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1" />
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Join</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+      &copy; 2026 APEX Store. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- JavaScript Modules -->
+  <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>

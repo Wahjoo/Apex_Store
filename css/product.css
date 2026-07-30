@@ -1,0 +1,19 @@
+/* Individual Product Page Specific Styles */
+.gallery-main-img {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.gallery-thumb-active {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  opacity: 1 !important;
+}
+
+.gallery-thumb {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-thumb:hover {
+  opacity: 0.9;
+}

@@ -1,0 +1,12 @@
+/* Checkout Page Specific Styles */
+.payment-card-selected {
+  border-color: #4f46e5 !important;
+  background-color: rgba(238, 242, 255, 0.6) !important;
+  color: #4338ca !important;
+}
+
+.checkout-step-badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  font-weight: 800;
+}
