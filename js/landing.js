@@ -15,7 +15,7 @@ async function loadLandingCategories() {
     const categories = await res.json();
 
     const topCategories = categories
-      .filter(cat => cat.name && !cat.name.includes('Config-') && !cat.name.includes('updatedName') && cat.name.trim().length <= 25)
+      .filter(cat => isValidCategory(cat))
       .slice(0, 5);
 
     const pillsContainer = document.getElementById('category-pills-container');

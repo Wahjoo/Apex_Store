@@ -1,23 +1,33 @@
 /**
  * APEX Store - Main Shared JavaScript Engine
- * Filter test products & handle placehold.co / broken image URLs with high-res fallbacks.
+ * Filter test products & strictly use database images.
  */
 
 const API_BASE_URL = 'https://api.escuelajs.co/api/v1';
 
-const FALLBACK_PRODUCT_IMAGES = [
-  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&auto=format&fit=crop&q=80'
-];
+const SVG_FALLBACK_IMAGE = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 24 24" fill="%23f8fafc" stroke="%23cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>`;
 
-function getCategoryFallbackImage(index = 0) {
-  return FALLBACK_PRODUCT_IMAGES[Math.abs(index) % FALLBACK_PRODUCT_IMAGES.length];
+// Helper to check if a category is real and clean
+function isValidCategory(cat) {
+  if (!cat || !cat.name || typeof cat.name !== 'string') return false;
+  const name = cat.name.trim();
+  const lower = name.toLowerCase();
+
+  if (lower.length === 0 || lower.length > 25) return false;
+
+  if (
+    lower.includes('config-') ||
+    lower.includes('updated') ||
+    lower.includes('test') ||
+    lower.includes('trial') ||
+    lower.includes('new category') ||
+    lower.includes('electronics from') ||
+    lower.includes('bakso') ||
+    lower.includes('chage')
+  ) {
+    return false;
+  }
+  return true;
 }
 
 // Get Cart from localStorage
@@ -70,7 +80,42 @@ function updateCartBadge() {
   });
 }
 
-// Helper to filter out test/junk products
+// Check if a product has a valid, non-placeholder database photo
+function hasValidProductPhoto(p) {
+  if (!p || !Array.isArray(p.images) || p.images.length === 0) return false;
+
+  return p.images.some(rawUrl => {
+    if (!rawUrl) return false;
+    let cleaned = String(rawUrl)
+      .replace(/^\[+/, '')
+      .replace(/\]+$/, '')
+      .replace(/^"+/, '')
+      .replace(/"+$/, '')
+      .replace(/^'+/, '')
+      .replace(/'+$/, '')
+      .trim();
+
+    if (cleaned.startsWith('[') || cleaned.endsWith(']')) {
+      cleaned = cleaned.replace(/[\[\]"']/g, '').trim();
+    }
+
+    if (
+      !cleaned.startsWith('http') || 
+      cleaned.length < 10 || 
+      cleaned.includes('placehold.co') ||
+      cleaned.includes('placeholder') ||
+      cleaned.includes('gmail.com') ||
+      cleaned.includes('google.com/imgres') ||
+      cleaned.endsWith('.com/') ||
+      cleaned.endsWith('.info/')
+    ) {
+      return false;
+    }
+    return true;
+  });
+}
+
+// Helper to filter out test/junk products or products without photos
 function isRealProduct(p) {
   if (!p || !p.title || !p.price) return false;
   const title = p.title.trim().toLowerCase();
@@ -80,7 +125,8 @@ function isRealProduct(p) {
     title === '' || 
     title === 'chage title' || 
     title.includes('config-') || 
-    title.includes('updatedname') || 
+    title.includes('updated') || 
+    title.includes('test') || 
     title.includes('jkuat') || 
     title.includes('electronics from') || 
     title.includes('new product') ||
@@ -90,13 +136,18 @@ function isRealProduct(p) {
   ) {
     return false;
   }
+
+  // Strictly exclude products without valid database photos
+  if (!hasValidProductPhoto(p)) {
+    return false;
+  }
   
   return true;
 }
 
-// Clean API image URL, filtering placehold.co and broken links
-function cleanExactApiImageUrl(rawUrl, index = 0) {
-  if (!rawUrl) return getCategoryFallbackImage(index);
+// Extract & clean image URL directly from database
+function cleanExactApiImageUrl(rawUrl) {
+  if (!rawUrl) return SVG_FALLBACK_IMAGE;
   
   let cleaned = String(rawUrl)
     .replace(/^\[+/, '')
@@ -111,26 +162,26 @@ function cleanExactApiImageUrl(rawUrl, index = 0) {
     cleaned = cleaned.replace(/[\[\]"']/g, '').trim();
   }
 
-  // Handle placehold.co placeholders or broken URLs by providing high-res product photo fallback
-  if (!cleaned.startsWith('http') || cleaned.includes('placehold.co') || cleaned.length < 10) {
-    return getCategoryFallbackImage(index);
+  // Strictly use valid HTTP/HTTPS image URL from database
+  if (!cleaned.startsWith('http') || cleaned.length < 10 || cleaned.includes('placehold.co')) {
+    return SVG_FALLBACK_IMAGE;
   }
 
   return cleaned;
 }
 
-// Process API product data directly
-function cleanProductData(p, index = 0) {
+// Process API product data directly using database photos only
+function cleanProductData(p) {
   let images = [];
   
   if (Array.isArray(p.images) && p.images.length > 0) {
-    images = p.images.map((img, i) => cleanExactApiImageUrl(img, p.id + i));
-  } else {
-    images = [getCategoryFallbackImage(p.id)];
+    images = p.images
+      .map(img => cleanExactApiImageUrl(img))
+      .filter(url => url && url !== SVG_FALLBACK_IMAGE);
   }
 
-  while (images.length < 3) {
-    images.push(getCategoryFallbackImage(p.id + images.length * 3));
+  if (images.length === 0) {
+    images = [SVG_FALLBACK_IMAGE];
   }
 
   return {
@@ -145,7 +196,7 @@ function cleanProductData(p, index = 0) {
 // Fallback Image Handler
 function handleImageError(imgElem) {
   imgElem.onerror = null;
-  imgElem.src = getCategoryFallbackImage(Math.floor(Math.random() * 10));
+  imgElem.src = SVG_FALLBACK_IMAGE;
 }
 
 // Toast Notifications System

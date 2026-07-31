@@ -104,7 +104,7 @@ async function loadProducts() {
     const data = await res.json();
     
     // Filter out config/test products
-    const cleanData = data.filter(p => p.title && !p.title.includes('Config-') && !p.title.includes('updatedName'));
+    const cleanData = data.filter(p => isRealProduct(p));
     appState.products = cleanData.map((p, index) => cleanProductData(p, index));
     appState.filteredProducts = [...appState.products];
 
@@ -131,7 +131,7 @@ async function loadCategories() {
     
     // Filter out config/test categories
     appState.categories = data
-      .filter(cat => cat.name && !cat.name.includes('Config-') && !cat.name.includes('updatedName') && cat.name.trim().length <= 25)
+      .filter(cat => isValidCategory(cat))
       .slice(0, 5);
 
     renderCategoryPills();
@@ -141,7 +141,7 @@ async function loadCategories() {
 }
 
 function cleanExactApiImageUrl(rawUrl) {
-  if (!rawUrl) return DEFAULT_FALLBACK_IMAGE;
+  if (!rawUrl) return SVG_FALLBACK_IMAGE;
   let cleaned = String(rawUrl)
     .replace(/^\[+/, '')
     .replace(/\]+$/, '')
@@ -155,20 +155,20 @@ function cleanExactApiImageUrl(rawUrl) {
     cleaned = cleaned.replace(/[\[\]"']/g, '').trim();
   }
 
-  if (!cleaned.startsWith('http')) return DEFAULT_FALLBACK_IMAGE;
+  if (!cleaned.startsWith('http') || cleaned.length < 10) return SVG_FALLBACK_IMAGE;
   return cleaned;
 }
 
-function cleanProductData(p, index = 0) {
+function cleanProductData(p) {
   let images = [];
   if (Array.isArray(p.images) && p.images.length > 0) {
-    images = p.images.map(img => cleanExactApiImageUrl(img));
-  } else {
-    images = [DEFAULT_FALLBACK_IMAGE];
+    images = p.images
+      .map(img => cleanExactApiImageUrl(img))
+      .filter(url => url && url !== SVG_FALLBACK_IMAGE);
   }
 
-  while (images.length < 3) {
-    images.push(images[images.length - 1] || DEFAULT_FALLBACK_IMAGE);
+  if (images.length === 0) {
+    images = [SVG_FALLBACK_IMAGE];
   }
 
   return {
@@ -182,7 +182,7 @@ function cleanProductData(p, index = 0) {
 
 function handleImageError(imgElem) {
   imgElem.onerror = null;
-  imgElem.src = DEFAULT_FALLBACK_IMAGE;
+  imgElem.src = SVG_FALLBACK_IMAGE;
 }
 
 function setupEventListeners() {

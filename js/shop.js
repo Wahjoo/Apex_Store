@@ -27,12 +27,7 @@ async function loadShopCategories() {
     const res = await fetch(`${API_BASE_URL}/categories`);
     const data = await res.json();
     
-    shopCategories = data.filter(cat => 
-      cat.name && 
-      !cat.name.includes('Config-') && 
-      !cat.name.includes('updatedName') && 
-      cat.name.trim().length <= 25
-    ).slice(0, 5);
+    shopCategories = data.filter(cat => isValidCategory(cat)).slice(0, 5);
 
     renderShopCategoriesSidebar();
   } catch (err) {
