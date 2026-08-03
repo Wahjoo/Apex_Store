@@ -1,16 +1,17 @@
 /**
  * APEX Store - Main Shared JavaScript Engine
- * Filter test products & strictly use database images.
+ * Product data is fetched from Fake Store API and normalized for the UI.
  */
 
-const API_BASE_URL = 'https://api.escuelajs.co/api/v1';
+const API_BASE_URL = 'https://fakestoreapi.com';
 
 const SVG_FALLBACK_IMAGE = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 24 24" fill="%23f8fafc" stroke="%23cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>`;
 
 // Helper to check if a category is real and clean
 function isValidCategory(cat) {
-  if (!cat || !cat.name || typeof cat.name !== 'string') return false;
-  const name = cat.name.trim();
+  const categoryName = typeof cat === 'string' ? cat : cat && cat.name;
+  if (!categoryName || typeof categoryName !== 'string') return false;
+  const name = categoryName.trim();
   const lower = name.toLowerCase();
 
   if (lower.length === 0 || lower.length > 25) return false;
@@ -82,9 +83,11 @@ function updateCartBadge() {
 
 // Check if a product has a valid, non-placeholder database photo
 function hasValidProductPhoto(p) {
-  if (!p || !Array.isArray(p.images) || p.images.length === 0) return false;
+  if (!p) return false;
+  const productImages = Array.isArray(p.images) ? p.images : [p.image];
+  if (productImages.length === 0) return false;
 
-  return p.images.some(rawUrl => {
+  return productImages.some(rawUrl => {
     if (!rawUrl) return false;
     let cleaned = String(rawUrl)
       .replace(/^\[+/, '')
@@ -173,9 +176,10 @@ function cleanExactApiImageUrl(rawUrl) {
 // Process API product data directly using database photos only
 function cleanProductData(p) {
   let images = [];
+  const sourceImages = Array.isArray(p.images) ? p.images : [p.image];
   
-  if (Array.isArray(p.images) && p.images.length > 0) {
-    images = p.images
+  if (sourceImages.length > 0) {
+    images = sourceImages
       .map(img => cleanExactApiImageUrl(img))
       .filter(url => url && url !== SVG_FALLBACK_IMAGE);
   }
@@ -186,10 +190,13 @@ function cleanProductData(p) {
 
   return {
     ...p,
-    price: Math.max(10, Math.round(p.price || 49.99)),
+    price: Math.round(Number(p.price || 49.99) * 100) / 100,
     images: images,
-    rating: (3.8 + (p.id % 13) * 0.1).toFixed(1),
-    reviewCount: 12 + (p.id * 7) % 180
+    category: typeof p.category === 'string'
+      ? { id: p.category, name: p.category }
+      : p.category,
+    rating: Number(p.rating && p.rating.rate ? p.rating.rate : 0).toFixed(1),
+    reviewCount: Number(p.rating && p.rating.count ? p.rating.count : 0)
   };
 }
 

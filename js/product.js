@@ -28,7 +28,9 @@ async function loadProductDetail(id) {
     // Fetch related products from same category
     let relatedProducts = [];
     if (currentProduct.category && currentProduct.category.id) {
-      const catRes = await fetch(`${API_BASE_URL}/products?categoryId=${currentProduct.category.id}`);
+      const categoryName = encodeURIComponent(currentProduct.category.id);
+      const catRes = await fetch(`${API_BASE_URL}/products/category/${categoryName}`);
+      if (!catRes.ok) throw new Error('Related products not found');
       const catData = await catRes.json();
       relatedProducts = catData
         .map((p, i) => cleanProductData(p, i))

@@ -1,9 +1,9 @@
 /**
  * Pure Vanilla JavaScript E-Commerce Store Engine
- * Powered by Platzi Fake Store API
+ * Powered by Fake Store API
  */
 
-const API_BASE_URL = 'https://api.escuelajs.co/api/v1';
+const API_BASE_URL = 'https://fakestoreapi.com';
 
 const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
 
@@ -125,7 +125,7 @@ async function loadProducts() {
 
 async function loadCategories() {
   try {
-    const res = await fetch(`${API_BASE_URL}/categories`);
+    const res = await fetch(`${API_BASE_URL}/products/categories`);
     if (!res.ok) throw new Error('Failed to fetch categories');
     const data = await res.json();
     

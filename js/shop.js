@@ -1,6 +1,6 @@
 /**
  * Shop Catalog Page Logic (shop.html)
- * Filters test products and placehold.co images.
+ * Displays and filters products from Fake Store API.
  */
 
 let shopProducts = [];
@@ -24,10 +24,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadShopCategories() {
   try {
-    const res = await fetch(`${API_BASE_URL}/categories`);
+    const res = await fetch(`${API_BASE_URL}/products/categories`);
     const data = await res.json();
     
-    shopCategories = data.filter(cat => isValidCategory(cat)).slice(0, 5);
+    shopCategories = data
+      .filter(cat => isValidCategory(cat))
+      .map(name => ({ id: name, name }))
+      .slice(0, 5);
 
     renderShopCategoriesSidebar();
   } catch (err) {
@@ -53,15 +56,25 @@ function renderShopCategoriesSidebar() {
   if (!list) return;
 
   list.innerHTML = `
-    <li onclick="filterShopByCategory('all')" class="cursor-pointer py-1.5 px-3 rounded-lg text-sm font-medium ${selectedCategory === 'all' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
-      All Categories
+    <li>
+      <button type="button" data-shop-category="all" class="w-full text-left cursor-pointer py-1.5 px-3 rounded-lg text-sm font-medium ${selectedCategory === 'all' ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
+        All Categories
+      </button>
     </li>
     ${shopCategories.map(cat => `
-      <li onclick="filterShopByCategory('${cat.id}')" class="cursor-pointer py-1.5 px-3 rounded-lg text-sm font-medium ${selectedCategory == cat.id ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
-        ${cat.name}
+      <li>
+        <button type="button" data-shop-category="${encodeURIComponent(cat.id)}" class="w-full text-left cursor-pointer py-1.5 px-3 rounded-lg text-sm font-medium ${selectedCategory === cat.id ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
+          ${cat.name}
+        </button>
       </li>
     `).join('')}
   `;
+
+  list.querySelectorAll('[data-shop-category]').forEach(button => {
+    button.addEventListener('click', () => {
+      filterShopByCategory(decodeURIComponent(button.dataset.shopCategory));
+    });
+  });
 }
 
 function filterShopByCategory(catId) {

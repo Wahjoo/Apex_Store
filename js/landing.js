@@ -1,6 +1,6 @@
 /**
  * Landing Page Logic (index.html)
- * Filters test products and placehold.co images.
+ * Displays products and categories from Fake Store API.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -9,13 +9,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadLandingFeaturedProducts();
 });
 
+function getCategoryVisual(categoryName) {
+  const visuals = {
+    electronics: { icon: 'fa-solid fa-laptop', gradient: 'from-sky-500 to-indigo-700' },
+    jewelery: { icon: 'fa-solid fa-gem', gradient: 'from-fuchsia-500 to-purple-700' },
+    "men's clothing": { icon: 'fa-solid fa-shirt', gradient: 'from-blue-500 to-slate-800' },
+    "women's clothing": { icon: 'fa-solid fa-person-dress', gradient: 'from-rose-400 to-pink-700' }
+  };
+
+  return visuals[categoryName.toLowerCase()] || {
+    icon: 'fa-solid fa-bag-shopping',
+    gradient: 'from-indigo-500 to-violet-700'
+  };
+}
+
+function formatCategoryName(categoryName) {
+  return categoryName.replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
 async function loadLandingCategories() {
   try {
-    const res = await fetch(`${API_BASE_URL}/categories`);
+    const res = await fetch(`${API_BASE_URL}/products/categories`);
     const categories = await res.json();
 
     const topCategories = categories
       .filter(cat => isValidCategory(cat))
+      .map(name => ({ id: name, name }))
       .slice(0, 5);
 
     const pillsContainer = document.getElementById('category-pills-container');
@@ -25,7 +44,7 @@ async function loadLandingCategories() {
           All Items
         </a>
         ${topCategories.map(cat => `
-          <a href="shop.html?category=${cat.id}" class="category-pill bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 py-2.5 rounded-full font-medium text-sm transition">
+          <a href="shop.html?category=${encodeURIComponent(cat.id)}" class="category-pill bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 py-2.5 rounded-full font-medium text-sm transition">
             ${cat.name}
           </a>
         `).join('')}
@@ -35,14 +54,18 @@ async function loadLandingCategories() {
     const gridContainer = document.getElementById('landing-categories-grid');
     if (gridContainer) {
       gridContainer.innerHTML = topCategories.map(cat => {
-        const catImg = cleanExactApiImageUrl(cat.image);
+        const visual = getCategoryVisual(cat.name);
         return `
-          <a href="shop.html?category=${cat.id}" class="group relative h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-            <img src="${catImg}" referrerpolicy="no-referrer" onerror="handleImageError(this)" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent flex items-end p-6">
+          <a href="shop.html?category=${encodeURIComponent(cat.id)}" class="group relative h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-gradient-to-br ${visual.gradient}">
+            <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+              <div class="w-28 h-28 rounded-3xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shadow-xl transition duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <i class="${visual.icon} text-5xl"></i>
+              </div>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-white/5 flex items-end p-6">
               <div>
                 <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold text-white mb-2">Category</span>
-                <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition">${cat.name}</h3>
+                <h3 class="text-xl font-bold text-white group-hover:text-indigo-100 transition">${formatCategoryName(cat.name)}</h3>
               </div>
             </div>
           </a>
